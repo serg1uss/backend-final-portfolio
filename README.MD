@@ -1,6 +1,7 @@
 # Stock and News Data Visualization App
 
-Created by Sergey Trefilov. BDA-2305
+Created by Sergey Trefilov. BDA-2305.
+
 This application provides user authentication with role-based access (Admin, Editor), 2FA, portfolio management, and integrates with stock and news APIs for dynamic data presentation.
 
 

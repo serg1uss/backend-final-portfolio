@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA Setup</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <h1>2FA Setup</h1>
+    <p>Scan this QR code with your 2FA app.</p>
+    <img src="<%= qrCode %>" alt="QR Code for 2FA">
+    <p>Secret: <%= secret %>
+    </p>
+    <form action="/confirm-2fa" method="POST">
+        <input type="hidden" name="userId" value="<%= userId %>">
+        <input type="hidden" name="secret" value="<%= secret %>">
+        <button type="submit">Confirm QR Code Scanned</button>
+    </form>
+    <%- include('partials/footer') %>
+</body>
+
+</html>

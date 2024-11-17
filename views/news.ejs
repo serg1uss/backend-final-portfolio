@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News Data Visualization</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <%- include('partials/navbar') %>
+        <h1>News Data Visualization</h1>
+
+        <!-- Input field for user to enter keyword to filter news -->
+        <label for="keyword">Enter a keyword to filter news:</label>
+        <input type="text" id="keyword" name="keyword" placeholder="Enter keyword" />
+
+        <button id="loadNews">Load News</button>
+
+        <!-- Canvas to render the chart -->
+        <div style="width:1000px !important; height:600px !important;">
+            <canvas id="newsChart" width="1000" height="600"></canvas>
+        </div>
+        <script>
+            const loadNewsButton = document.getElementById('loadNews');
+            const keywordInput = document.getElementById('keyword');
+            const newsChartCanvas = document.getElementById('newsChart');
+
+            loadNewsButton.addEventListener('click', async () => {
+                const keyword = keywordInput.value || '';  // Get user input keyword (empty if not provided)
+                const apiKey = "<%= NEWS_API %>";  // Get API key from environment
+
+                const response = await fetch(`https://newsapi.org/v2/everything?q=${keyword}&apiKey=${apiKey}`);
+                const data = await response.json();
+
+                if (data.status === "ok" && data.articles.length > 0) {
+                    const articles = data.articles;
+                    const sources = {};  // To count articles per source
+                    const dates = {};    // To count articles per day
+
+                    // Process the articles to count by source and date
+                    articles.forEach(article => {
+                        const source = article.source.name;
+                        const date = new Date(article.publishedAt).toISOString().split('T')[0];  // Get the date (yyyy-mm-dd)
+
+                        // Count articles by source
+                        sources[source] = sources[source] ? sources[source] + 1 : 1;
+
+                        // Count articles by date
+                        dates[date] = dates[date] ? dates[date] + 1 : 1;
+                    });
+
+                    let chartStatus = Chart.getChart("newsChart"); // Check if the chart exists
+                    if (chartStatus != undefined) {
+                        chartStatus.destroy(); // Destroy the existing chart
+                    }
+
+                    // Create the chart for the number of articles by source
+                    const ctx = newsChartCanvas.getContext('2d');
+                    new Chart(ctx, {
+                        type: 'bar',  // Bar chart for counting articles by source
+                        data: {
+                            labels: Object.keys(sources),
+                            datasets: [{
+                                label: 'Articles by Source',
+                                data: Object.values(sources),
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Source'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Number of Articles'
+                                    },
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+
+                    // Optionally, you can also create another chart for articles by date
+                    // const ctx2 = document.getElementById('anotherChart').getContext('2d');
+                    // new Chart(ctx2, {
+                    //     type: 'line',  // Line chart for articles per day
+                    //     data: {
+                    //         labels: Object.keys(dates),
+                    //         datasets: [{
+                    //             label: 'Articles by Date',
+                    //             data: Object.values(dates),
+                    //             borderColor: 'rgba(255, 99, 132, 1)',
+                    //             borderWidth: 1,
+                    //             fill: false
+                    //         }]
+                    //     },
+                    //     options: {
+                    //         responsive: true,
+                    //         scales: {
+                    //             x: {
+                    //                 title: {
+                    //                     display: true,
+                    //                     text: 'Date'
+                    //                 }
+                    //             },
+                    //             y: {
+                    //                 title: {
+                    //                     display: true,
+                    //                     text: 'Number of Articles'
+                    //                 },
+                    //                 beginAtZero: true
+                    //             }
+                    //         }
+                    //     }
+                    // });
+                } else {
+                    alert("No articles found or failed to retrieve data.");
+                }
+            });
+        </script>
+
+        <%- include('partials/footer') %>
+</body>
+
+</html>

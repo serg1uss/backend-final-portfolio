@@ -1,0 +1,16 @@
+<nav>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/news">News Visualization</a></li>
+        <li><a href="/stocks">Stocks Visualization</a></li>
+        <li><a href="#" id="logout-button">Logout</a></li>
+    </ul>
+</nav>
+<script>
+    document.getElementById('logout-button').addEventListener('click', () => {
+        localStorage.removeItem('authToken'); // Remove token from local storage
+        document.cookie = 'authToken=; Max-Age=0; path=/;'; // This will expire the cookie immediately
+        window.location.href = '/login'; // Redirect to login
+    });
+</script>

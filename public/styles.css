@@ -1,0 +1,119 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    margin-top: 60px;
+    padding-bottom: 2.5rem;
+    position: relative;
+    min-height: calc(100vh - 120px);
+}
+
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 99%;
+    height: 2.5rem;
+    background-color: #333;
+    color: white;
+    text-align: center;
+}
+
+h1 {
+    color: #333;
+}
+
+form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+label {
+    display: block;
+    margin: 10px 0 5px;
+}
+
+input,
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+}
+
+form {
+    display: inline-block;
+    margin: 10px;
+}
+
+button {
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+nav {
+    background-color: #333;
+    padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+nav ul li {
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    display: inline-block;
+}
+
+nav ul li a:hover {
+    color: #ddd;
+    background-color: #444;
+    border-radius: 5px;
+}
+
+/* 
+#stockChart {
+    width: 1000px !important;
+    height: 600px !important;
+} */

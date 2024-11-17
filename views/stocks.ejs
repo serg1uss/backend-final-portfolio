@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Data Visualization</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <%- include('partials/navbar') %>
+        <h1>Stock Data Visualization</h1>
+
+        <!-- Symbol selection form -->
+        <label for="symbol">Enter a stock symbol:</label>
+        <input type="text" id="symbol" name="symbol" placeholder="Enter symbol (e.g., IBM)" />
+
+
+
+
+        <button id="loadData">Load Data</button>
+
+        <!-- Canvas to render the chart -->
+        <div style="width:1000px !important; height:600px !important;">
+            <canvas id="stockChart" width="1000" height="600"></canvas>
+        </div>
+        <script>
+            const loadDataButton = document.getElementById('loadData');
+            const symbolInput = document.getElementById('symbol');
+            const stockChartCanvas = document.getElementById('stockChart');
+
+            loadDataButton.addEventListener('click', async () => {
+                const symbol = symbolInput.value;
+                const apiKey = "<%= AV_API %>";
+
+
+                const response = await fetch(`https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${symbol}&interval=5min&apikey=${apiKey}`);
+                const data = await response.json();
+
+                if (data["Time Series (5min)"]) {
+                    const timeSeries = data["Time Series (5min)"];
+                    const labels = [];
+                    const closes = [];
+
+                    // Parse the time series data
+                    for (const [timestamp, values] of Object.entries(timeSeries)) {
+                        labels.push(timestamp);
+                        closes.push(parseFloat(values["4. close"])); // Get close price
+                    }
+
+                    let chartStatus = Chart.getChart("stockChart"); // <canvas> id
+                    if (chartStatus != undefined) {
+                        chartStatus.destroy();
+                    }
+
+                    // Create the chart
+                    const ctx = stockChartCanvas.getContext('2d');
+                    new Chart(ctx, {
+                        type: 'line',  // Line chart for time series
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Close Price',
+                                data: closes,
+                                borderColor: 'rgba(75, 192, 192, 1)',
+                                borderWidth: 1,
+                                fill: false
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    type: 'category',
+                                    title: {
+                                        display: true,
+                                        text: 'Timestamp'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Close Price (USD)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    alert("Failed to retrieve data or no data available.");
+                }
+            });
+        </script>
+        <%- include('partials/footer') %>
+</body>
+
+</html>

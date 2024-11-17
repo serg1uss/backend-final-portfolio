@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+    <%- include('partials/navbar') %>
+
+        <!-- <button id="logout-button">Logout</button> -->
+        <h1>Dashboard</h1>
+
+        <% if (userRole==='admin' || userRole==='editor' ) { %>
+            <form action="/items/create" method="POST" enctype="multipart/form-data">
+                <h2>Create New Item</h2>
+                <input type="text" name="title" placeholder="Title" required>
+                <textarea name="description" placeholder="Description" required></textarea>
+                <input type="file" name="images" accept="image/*" multiple required>
+                <button type="submit">Create Item</button>
+            </form>
+            <% } %>
+
+                <hr>
+
+                <h2>Your Items</h2>
+                <% items.forEach(item=> { %>
+                    <div class="item">
+                        <h3>
+                            <%= item.title %>
+                        </h3>
+                        <p>
+                            <%= item.description %>
+                        </p>
+                        <div class="carousel">
+                            <% item.images.forEach(image=> { %>
+                                <img src="<%= image %>" alt="Item Image" />
+                                <% }) %>
+                        </div>
+                        <p>Created By: <%= item.createdBy.username || 'You' %>
+                        </p>
+                        <p>Created At: <%= new Date(item.createdAt).toLocaleString() %>
+                        </p>
+                        <p>Last Updated: <%= new Date(item.updatedAt).toLocaleString() %>
+                        </p>
+                        </p>
+
+                        <% if (userRole==='admin' ) { %>
+                            <form action="/items/<%= item._id %>/update" method="POST">
+                                <input type="text" name="title" value="<%= item.title %>" required>
+                                <textarea name="description" required><%= item.description %></textarea>
+                                <button type="submit">Update</button>
+                            </form>
+                            <form action="/items/<%= item._id %>/delete" method="POST">
+                                <button type="submit">Delete</button>
+                            </form>
+                            <% } %>
+                    </div>
+                    <% }) %>
+
+
+</body>
+<%- include('partials/footer') %>
+
+</html>
